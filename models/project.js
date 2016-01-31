@@ -21,6 +21,6 @@ ProjectSchema.statics.createUnique = function (objProject) {
     }).then(() => {
         return this.create(objProject);
     });
-}
+};
 
 module.exports = mongoose.model('Project', ProjectSchema);

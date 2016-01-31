@@ -3,7 +3,7 @@ var jwt = require('jsonwebtoken'),
 
 function generateToken (params) {
     var options = {
-        expiresIn: '10h'
+        expiresIn: '30m'
     };
 
     return jwt.sign(JSON.parse(JSON.stringify(params)), JWT_SECRET, options);

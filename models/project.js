@@ -5,7 +5,7 @@ var ProjectSchema   = new Schema({
     name:       { type: String, unique: true, required: true },
     startDate:  { type: Date, default: Date.now },
     pointScale: { type: String, enum: ['effort', 'fibonacci', 'time'], default: 'fibonacci' },
-    iterationLength: { type: Number, required: true, default: 1 },
+    iterationLength: { type: Number, default: 1 },
     doneIterationsToShow: { type: Number, default: 1 }
 });
 

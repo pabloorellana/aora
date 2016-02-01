@@ -64,6 +64,10 @@ function update (req, res, next) {
             data: project
         });
     }).catch((err) => {
+        if (err.code && err.code === 11000) {
+            res.errorInfo = { status: 409, title: 'There is already a project with the same name' };
+            return next();
+        }
         res.errorInfo = { status: 500 };
         next();
     });

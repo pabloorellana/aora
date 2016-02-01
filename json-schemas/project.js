@@ -8,7 +8,7 @@ const name    =  {
     },
     pointScale = {
         'type': 'string',
-        'enum': ['fibonacci', 'time']
+        'enum': ['effort', 'time']
     },
     iterationLength = {
         'type': 'number',

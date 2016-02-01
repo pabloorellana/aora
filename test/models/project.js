@@ -26,44 +26,44 @@ describe('project model', () => {
 
     describe('createUnique()', () => {
 
-    	it('shoud throw an exception if a project with the same name already exists', (done) => {
+        it('shoud throw an exception if a project with the same name already exists', (done) => {
 
-			const errorSpy = sinon.spy();
+            const errorSpy = sinon.spy();
 
-			sinon.stub(ProjectModel, 'findOne', () => {
-				return q.resolve({ name: 'Project One'});
-			});
+            sinon.stub(ProjectModel, 'findOne', () => {
+                return q.resolve({ name: 'Project One'});
+            });
 
-    		ProjectModel.createUnique(project).catch(errorSpy);
+            ProjectModel.createUnique(project).catch(errorSpy);
 
-    		process.nextTick(() => {
-    			assert(errorSpy.calledOnce);
-    			assert(errorSpy.calledWith({
-	                type: 'conflict',
-	                message: 'Project with the same name already exists.'
-	            }));
-    			done();
-    		});
-    	});
+            process.nextTick(() => {
+                assert(errorSpy.calledOnce);
+                assert(errorSpy.calledWith({
+                    type: 'conflict',
+                    message: 'Project with the same name already exists.'
+                }));
+                done();
+            });
+        });
 
-    	it('should create a new project', (done) => {
-    		const successSpy = sinon.spy();
+        it('should create a new project', (done) => {
+            const successSpy = sinon.spy();
 
-    		sinon.stub(ProjectModel, 'findOne', () => {
-				return q.resolve();
-			});
+            sinon.stub(ProjectModel, 'findOne', () => {
+                return q.resolve();
+            });
 
-			sinon.stub(ProjectModel, 'create', (params) => {
-				return q.resolve(params);
-			});
+            sinon.stub(ProjectModel, 'create', (params) => {
+                return q.resolve(params);
+            });
 
-			ProjectModel.createUnique(project).then(successSpy);
+            ProjectModel.createUnique(project).then(successSpy);
 
-			process.nextTick(() => {
-				assert(successSpy.calledOnce);
-				assert(successSpy.calledWith(project));
-				done();
-			});
-    	});
+            process.nextTick(() => {
+                assert(successSpy.calledOnce);
+                assert(successSpy.calledWith(project));
+                done();
+            });
+        });
     });
 });

@@ -1,6 +1,6 @@
 'use strict';
 
-var Projects = require('../models/project.js');
+const Projects = require('../models/project.js');
 
 function save (req, res, next) {
     Projects.createUnique(req.body).then((project) => {
@@ -34,7 +34,7 @@ function getAll (req, res, next) {
 };
 
 function getOne (req, res, next) {
-    var projectId = req.params.projectId;
+    const projectId = req.params.projectId;
 
     Projects.findOne({ _id: projectId }).then((project) => {
         if (!project) {
@@ -52,7 +52,7 @@ function getOne (req, res, next) {
 };
 
 function update (req, res, next) {
-    var projectId = req.params.projectId;
+    const projectId = req.params.projectId;
 
     Projects.findByIdAndUpdate(projectId, req.body, { new: true }).then((project) => {
         if (!project) {
@@ -63,14 +63,14 @@ function update (req, res, next) {
         res.json({
             data: project
         });
-    }).catch(function (err) {
+    }).catch((err) => {
         res.errorInfo = { status: 500 };
         next();
     });
 };
 
 function remove (req, res, next) {
-    var projectId = req.params.projectId;
+    const projectId = req.params.projectId;
 
     Projects.findByIdAndRemove(projectId).then((project) => {
         if (!project) {

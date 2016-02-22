@@ -15,6 +15,13 @@ const statusCodesHandlers = {
             'detail': params.detail || ''
         });
     },
+    401: function (params) {
+        return buildErrorMessage({
+            'status': '401',
+            'title':  params.title || 'Unauthorized',
+            'detail': params.detail || ''
+        });
+    },
     404: function (params) {
         return buildErrorMessage({
             'status': '404',

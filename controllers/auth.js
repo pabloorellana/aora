@@ -1,76 +1,38 @@
 'use strict';
 
-var User = require('../models/user'),
+const User = require('../models/user'),
     formatter = require('../utils/formatter.js');
 
-function authenticate (req, res) {
+function authenticate (req, res, next) {
 
-    User.findOne({ email: req.body.email }).then(function (user) {
+    User.findOne({ email: req.body.email }).then(user => {
         if (!user) {
-            res.status(404).send({
-                'errors': [
-                    {
-                        'status': '404',
-                        'title':  'User Not Found',
-                        'detail': 'Could not find any user ' + req.body.email
-                    }
-                ]
-            });
-
-            return;
+            return next({ status: 404, title: 'User Not Found' });
         }
 
-
         if (user.validPassword(req.body.password)) {
-            res.json({
+            return res.json({
                 data: formatter.excludeProperties(user, { password: 0, token: 0 }),
                 token: user.token
             });
-
-           return;
         }
-
-        res.status(401).send({
-            'errors': [
-                {
-                    'status': '401',
-                    'title':  'Invalid Credentials',
-                    'detail': 'Incorrect email or password'
-                }
-            ]
-        });
-    }).catch(function (err) {
-        res.status(500).send({
-            'errors': [
-                {
-                    'status': '500',
-                    'title':  'Internal Server Error',
-                    'detail': 'Something went wrong'
-                }
-            ]
-        });
-        return;
+        
+        next({ status: 401, title: 'Invalid Credentials' });
+        
+    }).catch(err => {
+        next({ status: 500 });        
     });
 };
 
-function signin (req, res) {
+function signin (req, res, next) {
 
-    User.findOne({ email: req.body.email }).then(function (result) {
+    User.findOne({ email: req.body.email }).then(result => {
         if (result) {
-            res.status(409).send({
-                'errors': [
-                    {
-                        'status': '409',
-                        'title':  'User Already Exists',
-                        'detail': 'There is already a registered user with the email ' + req.body.email
-                    }
-                ]
-            });
-
+            next({ status: 409, title:  'User Already Exists' });
             return true;
         }
 
-    }).then(function (userExists) {
+    }).then(userExists => {
         if (userExists) { return; }
 
         var params = {
@@ -79,35 +41,15 @@ function signin (req, res) {
             password: req.body.password
         };
 
-        return User.create(params).then(function (user) {
+        return User.create(params).then(user => {
             res.json({
                 data: formatter.excludeProperties(user, { password: 0, token: 0 }),
                 token: user.token
             });
-
-            return;
         });
-    }).catch(function (err) {
-        res.status(500).send({
-            'errors': [
-                {
-                    'status': '500',
-                    'title':  'Internal Server Error',
-                    'detail': 'Something went wrong'
-                }
-            ]
-        });
-        return;
+    }).catch(err => {
+        next({ status: 500 });
     });
 };
-
-/*function me (req, res) {
-    User.findOne({ token: req.token }).then(function (user) {
-        res.json({ data: user, token: user.token });
-    }).catch(function (err) {
-        res.sendStatus(500);
-        return;
-    });
-};*/
 
 module.exports = { authenticate, signin };

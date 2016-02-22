@@ -11,8 +11,6 @@ var userModelMock = {
     },
 
     res = {
-        status: function () { return this; },
-        send: function () { return; },
         json: function () { return; }
     },
 
@@ -24,9 +22,7 @@ var userModelMock = {
 
     sandbox,
 
-    statusSpy,
-
-    sendSpy;
+    nextSpy;
 
 describe('auth controller', function () {
 
@@ -38,9 +34,7 @@ describe('auth controller', function () {
 
         sandbox = sinon.sandbox.create();
 
-        statusSpy = sandbox.spy(res, 'status'),
-
-        sendSpy = sandbox.spy(res, 'send');
+        nextSpy = sandbox.spy();
     });
 
     afterEach(function () {
@@ -60,12 +54,14 @@ describe('auth controller', function () {
                     return q.resolve(null);
                 });
 
-                authController.authenticate(req, res);
+                authController.authenticate(req, res, nextSpy);
 
             process.nextTick(function () {
-                assert(statusSpy.calledOnce);
-                assert(statusSpy.calledWith(404));
-                assert(sendSpy.calledOnce);
+                assert(nextSpy.calledOnce);
+                assert(nextSpy.calledWith({ 
+                    status: 404,
+                    title: 'User Not Found'
+                }));
                 done();
             });
         });
@@ -116,12 +112,14 @@ describe('auth controller', function () {
                     return q.resolve(userFound);
                 });
 
-            authController.authenticate(req, res);
+            authController.authenticate(req, res, nextSpy);
 
             process.nextTick(function () {
-                assert(statusSpy.calledOnce);
-                assert(statusSpy.calledWith(401));
-                assert(sendSpy.calledOnce);
+                assert(nextSpy.calledOnce);
+                assert(nextSpy.calledWith({ 
+                    status: 401,
+                    title: 'Invalid Credentials'
+                }));
                 done();
             });
         });
@@ -140,12 +138,14 @@ describe('auth controller', function () {
                     return q.resolve({ username: 'someexistinguser' });
                 });
 
-            authController.signin(req, res);
+            authController.signin(req, res, nextSpy);
 
             process.nextTick(function () {
-                assert(statusSpy.calledOnce);
-                assert(statusSpy.calledWith(409));
-                assert(sendSpy.calledOnce);
+                assert(nextSpy.calledOnce);
+                assert(nextSpy.calledWith({ 
+                    status: 409,
+                    title: 'User Already Exists'
+                }));
                 done();
             });
         });

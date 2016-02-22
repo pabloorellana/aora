@@ -4,67 +4,56 @@ var router = require('express').Router(),
     storySchema = require('../json-schemas/story.js'),
     schemaValidator = require('../utils/schema-validation.js'),
     projectsController = require('../controllers/projects.js'),
-    storiesController = require('../controllers/stories.js'),
-    formatter = require('../utils/formatter.js');
+    storiesController = require('../controllers/stories.js');
 
 router.post('/',
 	jwtUtils.verifyToken,
 	schemaValidator.validate(projectSchema.whenCreate),
-	projectsController.save,
-	formatter.formatErrorResponse
+	projectsController.save
 );
 
 router.get('/',
 	jwtUtils.verifyToken,
-	projectsController.getAll,
-	formatter.formatErrorResponse
+	projectsController.getAll
 );
 
 router.get('/:projectId',
 	jwtUtils.verifyToken,
-	projectsController.getOne,
-	formatter.formatErrorResponse
+	projectsController.getOne
 );
 
 router.put('/:projectId',
 	jwtUtils.verifyToken,
 	schemaValidator.validate(projectSchema.whenUpdate),
-	projectsController.update,
-	formatter.formatErrorResponse
+	projectsController.update
 );
 
 router.delete('/:projectId',
 	jwtUtils.verifyToken,
-	projectsController.remove,
-	formatter.formatErrorResponse
+	projectsController.remove
 );
 
 // stories
 router.post('/:projectId/stories',
 	schemaValidator.validate(storySchema.whenCreate),
-	storiesController.save,
-	formatter.formatErrorResponse
+	storiesController.save
 );
 
 router.get('/:projectId/stories',
-	storiesController.getAll,
-	formatter.formatErrorResponse
+	storiesController.getAll
 );
 
 router.get('/:projectId/stories/:storyId',
-	storiesController.getOne,
-	formatter.formatErrorResponse
+	storiesController.getOne
 );
 
 router.put('/:projectId/stories/:storyId',
 	schemaValidator.validate(storySchema.whenUpdate),
-	storiesController.update,
-	formatter.formatErrorResponse
+	storiesController.update
 );
 
 router.delete('/:projectId/stories/:storyId',
-	storiesController.remove,
-	formatter.formatErrorResponse
+	storiesController.remove
 );
 
 module.exports = router;

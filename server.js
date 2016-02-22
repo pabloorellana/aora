@@ -1,12 +1,13 @@
-var express = require('express'),
+const express = require('express'),
     morgan = require('morgan'),
     bodyParser = require('body-parser'),
     mongoose = require('mongoose'),
-    app = express();
+    app = express(),
+    errorHandler = require('./middlewares/error-handler.js');
 
 require('mongoose').Promise = require('q').Promise;
 
-var port = process.env.PORT || 3001;
+const port = process.env.PORT || 3001;
 
 mongoose.connect('mongodb://172.17.0.2:27017/mean-auth');
 
@@ -21,13 +22,12 @@ app.use(function(req, res, next) {
 });
 
 app.use(require('./routes'));
+app.use(errorHandler.sendErrorResponse);
 
 process.on('uncaughtException', function(err) {
     console.log(err);
 });
 
-// Start Server
 app.listen(port, function () {
-    console.log( 'Express server listening on port ' + port);
+    console.log(`Express server listening on port ${port}`);
 });
-

@@ -3,91 +3,68 @@
 const Projects = require('../models/project.js');
 
 function save (req, res, next) {
-    Projects.createUnique(req.body).then((project) => {
-        res.json({
-            data: project
-        });
-    }).catch((err) => {
+    Projects.createUnique(req.body).then(project => {
+        res.json({ data: project });
+    }).catch(err => {
         if (err.type && err.type === 'conflict') {
-            res.errorInfo = { status: 409, detail: err.message };
-            return next();
+            return next({ status: 409, detail: err.message });
         }
-        res.errorInfo = { status: 500 };
-        next();
+        
+        next({ status: 500 });
     });
 };
 
 function getAll (req, res, next) {
-    Projects.find().then((projects) => {
-        if (projects.length === 0) {
-            res.errorInfo = { status: 404, title: 'No Projects Found' };
-            return next();
-        }
-
-        res.json({
-            data: projects
-        });
-    }).catch((err) => {
-        res.errorInfo = { status: 500 };
-        next();
+    Projects.find().then(projects => {
+        res.json({ data: projects });
+    }).catch(err => {
+        next({ status: 500 });
     });
 };
 
 function getOne (req, res, next) {
     const projectId = req.params.projectId;
 
-    Projects.findOne({ _id: projectId }).then((project) => {
+    Projects.findOne({ _id: projectId }).then(project => {
         if (!project) {
-            res.errorInfo = { status: 404, title: 'Project Not Found' };
-            return next();
+            return next({ status: 404, title: 'Project Not Found' });
         }
 
-        res.json({
-            data: project
-        });
-    }).catch((err) => {
-        res.errorInfo = { status: 500 };
-        next();
+        res.json({ data: project });
+    }).catch(err => { 
+        next({ status: 500 });
     });
 };
 
 function update (req, res, next) {
     const projectId = req.params.projectId;
 
-    Projects.findByIdAndUpdate(projectId, req.body, { new: true }).then((project) => {
+    Projects.findByIdAndUpdate(projectId, req.body, { new: true }).then(project => {
         if (!project) {
-            res.errorInfo = { status: 404, title: 'Project Not Found' };
-            return next();
+            return next({ status: 404, title: 'Project Not Found' });
         }
 
-        res.json({
-            data: project
-        });
-    }).catch((err) => {
+        res.json({ data: project });
+    }).catch(err => {
         if (err.code && err.code === 11000) {
-            res.errorInfo = { status: 409, title: 'There is already a project with the same name' };
-            return next();
+            return next({ status: 409, title: 'There is already a project with the same name' });
         }
-        res.errorInfo = { status: 500 };
-        next();
+        
+        next({ status: 500 });
     });
 };
 
 function remove (req, res, next) {
     const projectId = req.params.projectId;
 
-    Projects.findByIdAndRemove(projectId).then((project) => {
+    Projects.findByIdAndRemove(projectId).then(project => {
         if (!project) {
-            res.errorInfo = { status: 404, title: 'Projects Not Found' };
-            return next();
+            return next({ status: 404, title: 'Project Not Found' });
         }
 
-        res.json({
-            data: project
-        });
-    }).catch((err) => {
-        res.errorInfo = { status: 500 };
-        next();
+        res.json({ data: project });
+    }).catch(err => {
+        next({ status: 500 });
     });
 };
 

@@ -46,7 +46,7 @@ describe('projects controller', () => {
 
     describe('save()', () => {
 
-        it('should the res.errorInfo.status as 409 if the project already exists and call the "next" middleware', (done) => {
+        it('should call the next middleware with error 409 if the project already exists', (done) => {
             const req = { body: project },
                 errorObj = {
                     type: 'conflict',
@@ -60,15 +60,16 @@ describe('projects controller', () => {
             projectsController.save(req, res, nextSpy);
 
             process.nextTick(() => {
-                assert.isDefined(res.errorInfo);
-                assert.equal(res.errorInfo.status, 409);
-                assert.equal(res.errorInfo.detail, errorObj.message);
                 assert(nextSpy.calledOnce);
+                assert(nextSpy.calledWith({
+                    'status': 409,
+                    'detail': 'Project with the same name already exists.'
+                }));
                 done();
             });
         });
 
-        it('should the res.errorInfo.status as 500 if an unknown error happens and call the "next" middleware', (done) => {
+        it('should call the next middleware with error 500', (done) => {
             const req = { body: project };
 
             sandbox.stub(projectModelMock, 'createUnique', () => {
@@ -78,9 +79,10 @@ describe('projects controller', () => {
             projectsController.save(req, res, nextSpy);
 
             process.nextTick(() => {
-                assert.isDefined(res.errorInfo);
-                assert.equal(res.errorInfo.status, 500);
                 assert(nextSpy.calledOnce);
+                assert(nextSpy.calledWith({
+                    'status': 500
+                }));
                 done();
             });
         });
@@ -109,29 +111,6 @@ describe('projects controller', () => {
 
     describe('getAll()', () => {
 
-        it('should set the res.errorInfo.status as 404 if no projects are found', (done) => {
-
-            const req = {
-                params: {
-                    projectId: 'projectOne'
-                }
-            };
-
-            sandbox.stub(projectModelMock, 'find', () => {
-                return q.resolve([]);
-            });
-
-            projectsController.getAll(req, res, nextSpy);
-
-            process.nextTick(() => {
-                assert.isDefined(res.errorInfo);
-                assert.equal(res.errorInfo.status, 404);
-                assert.isString(res.errorInfo.title);
-                assert(nextSpy.calledOnce);
-                done();
-            });
-        });
-
         it('should return all the projects', (done) => {
 
             const jsonSpy = sandbox.spy(res, 'json'),
@@ -158,7 +137,7 @@ describe('projects controller', () => {
 
     describe('getOne()', () => {
 
-        it('should set the res.errorInfo.status as 404 if the specified project is not found', (done) => {
+        it('should call the next middleware with error 404 if the specified project was not found', (done) => {
 
             const req = {
                 params: {
@@ -172,11 +151,12 @@ describe('projects controller', () => {
 
             projectsController.getOne(req, res, nextSpy);
 
-            process.nextTick(() => {
-                assert.isDefined(res.errorInfo);
-                assert.equal(res.errorInfo.status, 404);
-                assert.isString(res.errorInfo.title);
+            process.nextTick(() => {                
                 assert(nextSpy.calledOnce);
+                assert(nextSpy.calledWith({ 
+                    status: 404,
+                    title: 'Project Not Found' 
+                }));
                 done();
             });
         });
@@ -208,7 +188,7 @@ describe('projects controller', () => {
 
     describe('update()', () => {
 
-        it('should set the res.errorInfo.status as 404 if the specified project is not found', (done) => {
+        it('should call the next middleware with error 404 if the specified project was not found', (done) => {
 
             const req = {
                 params: {
@@ -224,10 +204,11 @@ describe('projects controller', () => {
             projectsController.update(req, res, nextSpy);
 
             process.nextTick(() => {
-                assert.isDefined(res.errorInfo);
-                assert.equal(res.errorInfo.status, 404);
-                assert.isString(res.errorInfo.title);
                 assert(nextSpy.calledOnce);
+                assert(nextSpy.calledWith({ 
+                    status: 404,
+                    title: 'Project Not Found' 
+                }));
                 done();
             });
         });
@@ -260,7 +241,7 @@ describe('projects controller', () => {
 
     describe('remove()', () => {
 
-        it('should set the res.errorInfo.status as 404 if the specified project is not found', (done) => {
+        it('should call the next middleware with error 404 if the specified project was not found', (done) => {
 
             const req = {
                 params: {
@@ -275,10 +256,11 @@ describe('projects controller', () => {
             projectsController.remove(req, res, nextSpy);
 
             process.nextTick(() => {
-                assert.isDefined(res.errorInfo);
-                assert.equal(res.errorInfo.status, 404);
-                assert.isString(res.errorInfo.title);
                 assert(nextSpy.calledOnce);
+                assert(nextSpy.calledWith({ 
+                    status: 404,
+                    title: 'Project Not Found' 
+                }));
                 done();
             });
         });

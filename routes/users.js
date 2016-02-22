@@ -1,8 +1,8 @@
 var router = require('express').Router(),
     usersController = require('../controllers/users.js'),
-    jwtUtils = require('../utils/jwt.js'),
+    jwtUtils = require('../middlewares/jwt.js'),
     userSchema = require('../json-schemas/user.js'),
-    schemaValidator = require('../utils/schema-validation.js');
+    schemaValidator = require('../middlewares/schema-validation.js');
 
 router.post('/',
     jwtUtils.verifyToken,

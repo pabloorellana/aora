@@ -37,7 +37,7 @@ describe('schema-validation', function () {
 
     beforeEach(function () {
 
-        schemaValidation = proxyquire('../../utils/schema-validation.js', {
+        schemaValidation = proxyquire('../../middlewares/schema-validation.js', {
             'jsonschema': jsonschemaMock
         });
 

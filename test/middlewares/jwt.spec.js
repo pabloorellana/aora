@@ -27,7 +27,7 @@ describe('jwtUtils', function () {
 
     beforeEach(function () {
 
-        jwtUtils = proxyquire('../../utils/jwt.js', {
+        jwtUtils = proxyquire('../../middlewares/jwt.js', {
             'jsonwebtoken': jwtMock,
             '../config/jwt-secret.json': JWT_SECRET_MOCK
         });

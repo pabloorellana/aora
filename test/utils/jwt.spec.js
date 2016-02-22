@@ -6,14 +6,7 @@ var assert = require('chai').assert,
 
 var token = 'jfggg897908dfkaei8634',
 
-    res = {
-        status: function () {
-            return this;
-        },
-        send: function () {
-            return;
-        }
-    },
+    res = { },
 
     jwtMock = {
         sign: function () { return true; },
@@ -28,9 +21,7 @@ var token = 'jfggg897908dfkaei8634',
 
     sandbox,
 
-    statusSpy,
-
-    sendSpy;
+    nextSpy;
 
 describe('jwtUtils', function () {
 
@@ -43,9 +34,7 @@ describe('jwtUtils', function () {
 
         sandbox = sinon.sandbox.create();
 
-        statusSpy = sandbox.spy(res, 'status');
-
-        sendSpy = sandbox.spy(res, 'send');
+        nextSpy = sandbox.spy();
     });
 
     afterEach(function () {
@@ -61,11 +50,10 @@ describe('jwtUtils', function () {
                 }
             };
 
-            jwtUtils.verifyToken(req, res, function () {});
-
-            assert(statusSpy.calledOnce);
-            assert(statusSpy.calledWith(401));
-            assert(sendSpy.calledOnce);
+            jwtUtils.verifyToken(req, res, nextSpy);
+            
+            assert(nextSpy.calledOnce);
+            assert(nextSpy.calledWith({ status: 401 }));
         });
 
         it('should return 401 if the token is invalid', function () {
@@ -82,7 +70,7 @@ describe('jwtUtils', function () {
 
             sandbox.stub(jwtMock, 'verify', verifyCallbackSpy);
 
-            jwtUtils.verifyToken(req, res);
+            jwtUtils.verifyToken(req, res, nextSpy);
 
             assert(verifyCallbackSpy.calledOnce);
             assert(verifyCallbackSpy.calledWith(
@@ -91,9 +79,11 @@ describe('jwtUtils', function () {
                     { ignoreExpiration: false }
                 )
             );
-            assert(statusSpy.calledOnce);
-            assert(statusSpy.calledWith(401));
-            assert(sendSpy.calledOnce);
+            assert(nextSpy.calledOnce);
+            assert(nextSpy.calledWith({
+                status: 401,
+                title:  'Access Token Expired'
+            }));
         });
 
         it('should set the "token" attribute to the "response" object and execute the "next" callback', function () {

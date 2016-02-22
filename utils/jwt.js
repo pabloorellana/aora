@@ -12,16 +12,7 @@ function generateToken (params) {
 function verifyToken (req, res, next) {
     var bearerHeader = req.headers['authorization'];
     if (!bearerHeader) {
-        res.status(401).send({
-            'errors': [
-                {
-                    'status': '401',
-                    'title':  'Unauthorized',
-                    'detail': ''
-                }
-            ]
-        });
-        return;
+        return next({ status: 401 });        
     }
 
     var token = bearerHeader.split(' ')[1];
@@ -31,16 +22,7 @@ function verifyToken (req, res, next) {
 
     jwt.verify(token, JWT_SECRET, options, function (err, result) {
         if (err) {
-            res.status(401).send({
-                'errors': [
-                    {
-                        'status': '401',
-                        'title':  'Access Token Expired',
-                        'detail': ''
-                    }
-                ]
-            });
-            return;
+            return next({ status: 401, title: 'Access Token Expired' });            
         }
 
         req.token = token;

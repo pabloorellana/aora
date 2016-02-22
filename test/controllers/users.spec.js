@@ -46,7 +46,7 @@ describe('users controller', function () {
 
     describe('save()', function () {
 
-        it('should the res.errorInfo.status as 409 if the user already exists and call the "next" middleware', function (done) {
+        it('should call the next middleware with error 409 if the user already exists', function (done) {
             var req = {
                 body: {
                     email: 'existinguser@user.com'
@@ -60,10 +60,11 @@ describe('users controller', function () {
             usersController.save(req, res, nextSpy);
 
             process.nextTick(function () {
-                assert.isDefined(res.errorInfo);
-                assert.equal(res.errorInfo.status, 409);
-                assert.isString(res.errorInfo.title);
                 assert(nextSpy.calledOnce);
+                assert(nextSpy.calledWith({
+                    status: 409,
+                    title: 'User Already Exists'
+                }));
                 done();
             });
         });
@@ -100,29 +101,6 @@ describe('users controller', function () {
 
     describe('getAll()', function () {
 
-        it('should set the res.errorInfo.status as 404 if no users are found', function (done) {
-
-            var req = {
-                params: {
-                    userId: 'userid1'
-                }
-            };
-
-            sandbox.stub(userModelMock, 'find', function () {
-                return q.resolve([]);
-            });
-
-            usersController.getAll(req, res, nextSpy);
-
-            process.nextTick(function () {
-                assert.isDefined(res.errorInfo);
-                assert.equal(res.errorInfo.status, 404);
-                assert.isString(res.errorInfo.title);
-                assert(nextSpy.calledOnce);
-                done();
-            });
-        });
-
         it('should return all the users', function (done) {
 
             var jsonSpy = sandbox.spy(res, 'json');
@@ -148,7 +126,7 @@ describe('users controller', function () {
 
     describe('getOne()', function () {
 
-        it('should set the res.errorInfo.status as 404 if the specified user is not found', function (done) {
+        it('should call the next middleware with error 404 if the specified user is not found', function (done) {
 
             var req = {
                 params: {
@@ -163,10 +141,12 @@ describe('users controller', function () {
             usersController.getOne(req, res, nextSpy);
 
             process.nextTick(function () {
-                assert.isDefined(res.errorInfo);
-                assert.equal(res.errorInfo.status, 404);
-                assert.isString(res.errorInfo.title);
                 assert(nextSpy.calledOnce);
+                assert(nextSpy.calledWith({ 
+                    status: 404,
+                    title: 'User Not Found'
+                }));              
+                
                 done();
             });
         });
@@ -197,7 +177,7 @@ describe('users controller', function () {
 
     describe('update()', function () {
 
-        it('should set the res.errorInfo.status as 404 if the specified user is not found', function (done) {
+        it('should call the next middleware with error 404 if the specified user is not found', function (done) {
 
             var req = {
                 params: {
@@ -213,10 +193,11 @@ describe('users controller', function () {
             usersController.update(req, res, nextSpy);
 
             process.nextTick(function () {
-                assert.isDefined(res.errorInfo);
-                assert.equal(res.errorInfo.status, 404);
-                assert.isString(res.errorInfo.title);
                 assert(nextSpy.calledOnce);
+                assert(nextSpy.calledWith({ 
+                    status: 404,
+                    title: 'User Not Found'
+                }));
                 done();
             });
         });
@@ -247,7 +228,7 @@ describe('users controller', function () {
 
     describe('remove()', function () {
 
-        it('should set the res.errorInfo.status as 404 if the specified user is not found', function (done) {
+        it('should call the next middleware with error 404 if the specified user is not found', function (done) {
 
             var req = {
                 params: {
@@ -261,11 +242,12 @@ describe('users controller', function () {
 
             usersController.remove(req, res, nextSpy);
 
-            process.nextTick(function () {
-                assert.isDefined(res.errorInfo);
-                assert.equal(res.errorInfo.status, 404);
-                assert.isString(res.errorInfo.title);
+            process.nextTick(function () {                
                 assert(nextSpy.calledOnce);
+                assert(nextSpy.calledWith({ 
+                    status: 404,
+                    title: 'User Not Found'
+                }));
                 done();
             });
         });

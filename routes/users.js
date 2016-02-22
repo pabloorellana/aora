@@ -2,51 +2,33 @@ var router = require('express').Router(),
     usersController = require('../controllers/users.js'),
     jwtUtils = require('../utils/jwt.js'),
     userSchema = require('../json-schemas/user.js'),
-    schemaValidator = require('../utils/schema-validation.js'),
-    formatter = require('../utils/formatter.js');
+    schemaValidator = require('../utils/schema-validation.js');
 
 router.post('/',
     jwtUtils.verifyToken,
-
     schemaValidator.validate(userSchema.whenCreate),
-
-    usersController.save,
-
-    formatter.formatErrorResponse
+    usersController.save
 );
 
 router.get('/',
     jwtUtils.verifyToken,
-
-    usersController.getAll,
-
-    formatter.formatErrorResponse
+    usersController.getAll
 );
 
 router.get('/:userId',
     jwtUtils.verifyToken,
-
-    usersController.getOne,
-
-    formatter.formatErrorResponse
+    usersController.getOne
 );
 
 router.put('/:userId',
     jwtUtils.verifyToken,
-
     schemaValidator.validate(userSchema.whenUpdate),
-
-    usersController.update,
-
-    formatter.formatErrorResponse
+    usersController.update
 );
 
 router.delete('/:userId',
     jwtUtils.verifyToken,
-
-    usersController.remove,
-
-    formatter.formatErrorResponse
+    usersController.remove
 );
 
 module.exports = router;

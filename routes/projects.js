@@ -1,8 +1,8 @@
 var router = require('express').Router(),
-    jwtUtils = require('../middlewares/jwt.js'),
+    jwtUtils = require('../middlewares/jwt-validator.js'),
     projectSchema = require('../json-schemas/project.js'),
     storySchema = require('../json-schemas/story.js'),
-    schemaValidator = require('../middlewares/schema-validation.js'),
+    schemaValidator = require('../middlewares/schema-validator.js'),
     projectsController = require('../controllers/projects.js'),
     storiesController = require('../controllers/stories.js');
 

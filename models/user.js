@@ -1,6 +1,6 @@
 var mongoose = require('mongoose'),
     bcrypt   = require('bcrypt-nodejs'),
-    jwtUtils = require('../middlewares/jwt'),
+    jwtUtils = require('../middlewares/jwt-validator.js'),
     Schema = mongoose.Schema;
 
 var UserSchema   = new Schema({

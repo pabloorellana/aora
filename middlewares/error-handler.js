@@ -1,6 +1,5 @@
 'use strict';
 
-
 function buildErrorMessage (errors) {
     return {
         'errors': [errors]

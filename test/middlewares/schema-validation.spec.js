@@ -33,11 +33,11 @@ var jsonschemaMock  = {
 
     nextSpy;
 
-describe('schema-validation', function () {
+describe('schema-validator', function () {
 
     beforeEach(function () {
 
-        schemaValidation = proxyquire('../../middlewares/schema-validation.js', {
+        schemaValidation = proxyquire('../../middlewares/schema-validator.js', {
             'jsonschema': jsonschemaMock
         });
 

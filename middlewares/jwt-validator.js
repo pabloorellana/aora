@@ -1,3 +1,5 @@
+'use strict';
+
 var jwt = require('jsonwebtoken'),
     JWT_SECRET = require('../config/jwt-secret.json').secret;
 

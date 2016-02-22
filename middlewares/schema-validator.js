@@ -1,3 +1,5 @@
+'use strict';
+
 var jsonSchemaValidator = require('jsonschema');
 
 exports.validate = function (schemaDefinition) {
